@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sito sul sistema endocrino per l'Operatore Socio-Sanitario (OSS): scopri ghiandole, ormoni e funzioni con quiz interattivi.">
+    <meta name="keywords" content="sistema endocrino, OSS, ipofisi, pancreas, tiroide, quiz sistema endocrino">
+    <title>Il Sistema Endocrino</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0d1b2a, #1b263b);
+            color: #e0e0e0;
+            overflow-x: hidden;
+            position: relative;
+            font-size: 18px;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/circuit-pattern.png');
+            opacity: 0.05;
+            z-index: -1;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px;
+            position: relative;
+        }
+        header {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 3.5em;
+            color: #00d4ff;
+            text-shadow: 0 0 10px #00d4ff;
+            animation: glow 2s infinite alternate;
+        }
+        header p {
+            margin: 10px 0 0;
+            font-size: 1.2em;
+            color: #ecf0f1;
+        }
+        nav {
+            background: #34495e;
+            padding: 10px 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        nav a {
+            color: #ecf0f1;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 1.2em;
+            transition: color 0.3s ease;
+        }
+        nav a:hover {
+            color: #3498db;
+        }
+        section {
+            background: rgba(20, 40, 60, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+            margin-bottom: 50px;
+            animation: fadeIn 1.5s ease-in;
+            border: 1px solid #00d4ff;
+        }
+        section h2 {
+            color: #00d4ff;
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 0 0 5px #00d4ff;
+        }
+        section h3 {
+            color: #00d4ff;
+            font-size: 1.5em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        section p, section ul {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+        section ul {
+            list-style-type: disc;
+            padding-left: 40px;
+        }
+        section ul ul {
+            list-style-type: circle;
+            padding-left: 30px;
+        }
+        .quiz-container {
+            margin-top: 40px;
+            text-align: center;
+        }
+        .quiz-selector {
+            margin-bottom: 20px;
+        }
+        .quiz-selector select {
+            padding: 10px;
+            font-size: 1.2em;
+            background: rgba(30, 50, 70, 0.95);
+            color: #e0e0e0;
+            border: 1px solid #00d4ff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .quiz-timer {
+            font-size: 1.5em;
+            color: #00d4ff;
+            margin-bottom: 20px;
+        }
+        .quiz-balls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .quiz-ball {
+            width: 40px;
+            height: 40px;
+            background: rgba(30, 50, 70, 0.95);
+            border: 2px solid #00d4ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1em;
+            color: #e0e0e0;
+            transition: background 0.3s ease;
+        }
+        .quiz-ball.correct {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        .quiz-ball.incorrect {
+            background: #ff0000;
+            color: #000;
+            box-shadow: 0 0 10px #ff0000;
+        }
+        .quiz-question {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #00d4ff;
+        }
+        .quiz-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .quiz-option {
+            background: rgba(30, 50, 70, 0.95);
+            padding: 15px 30px;
+            border-radius: 10px;
+            border: 1px solid #00d4ff;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-size: 1.1em;
+        }
+        .quiz-option:hover {
+            background: rgba(0, 212, 255, 0.3);
+        }
+        .quiz-feedback {
+            margin-top: 20px;
+            font-size: 1.2em;
+            display: none;
+        }
+        .correct {
+            color: #00ff00;
+        }
+        .incorrect {
+            color: #ff0000;
+        }
+        .quiz-result {
+            margin-top: 20px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        .retry-button {
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: #00d4ff;
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .retry-button:hover {
+            background: #3498db;
+        }
+        footer {
+            background: #2c3e50;
+            color: #ecf0f1;
+            text-align: center;
+            padding: 20px 0;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        footer p {
+            margin: 0;
+            font-size: 1em;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 5px #00d4ff, 0 0 10px #00d4ff; }
+            to { text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff; }
+        }
+        @media (max-width: 768px) {
+            nav a {
+                display: block;
+                margin: 10px 0;
+            }
+            section {
+                padding: 20px;
+            }
+            header h1 {
+                font-size: 2.5em;
+            }
+            header p {
+                font-size: 1em;
+            }
+            .quiz-options {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .quiz-ball {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8em;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>Il Sistema Endocrino</h1>
+        <p>Struttura e Funzioni per l'OSS</p>
+    </header>
+
+    <nav>
+        <a href="#introduzione">Introduzione</a>
+        <a href="#ghiandole">Ghiandole</a>
+        <a href="#quiz">Quiz</a>
+    </nav>
+
+    <div class="container">
+        <section id="introduzione">
+            <h2>Introduzione al Sistema Endocrino</h2>
+            <p>Le sostanze prodotte dalle strutture endocrine si chiamano ormoni (o increti). Svolgono funzioni relative all'omeostasi dell'organismo, mantenendo l'equilibrio delle sue funzioni e delle caratteristiche chimico-fisiche dell'ambiente interno, nonostante le variazioni dell'ambiente esterno.</p>
+        </section>
+
+        <section id="ghiandole">
+            <h2>Principali Ghiandole del Sistema Endocrino</h2>
+            <ul>
+                <li><strong>Ipofisi</strong></li>
+                <li><strong>Pancreas</strong></li>
+                <li><strong>Timo</strong></li>
+                <li><strong>Tiroide</strong></li>
+                <li><strong>Paratiroidi</strong></li>
+                <li><strong>Ghiandole surrenali</strong></li>
+            </ul>
+
+            <h3>L’Ipofisi</h3>
+            <p>Pur essendo piccola (pesa poco più di mezzo grammo), l’ipofisi è la ghiandola endocrina più importante. È formata da due porzioni: la neuroipofisi (posteriore, derivata dall’ipotalamo) e l’adenoipofisi (anteriore, derivata dall’epitelio orale), divisa in parte tuberale, distale e intermedia. Gli ormoni dell’adenoipofisi (GH, ACTH, LTH, LH, FSH, TSH) regolano metabolismo, accrescimento e apparato genitale, sotto il controllo dell’ipotalamo. La neuroipofisi immagazzina ossitocina e ormone antidiuretico (ADH).</p>
+
+            <h3>Il Pancreas</h3>
+            <p>Il pancreas (15 cm, 70-80 g) ha funzioni endocrine ed esocrine. È diviso in testa, collo, corpo e coda. La secrezione esocrina (succo pancreatico con enzimi come lipasi e amilasi) avviene tramite i dotti di Wirsung e Santorini, mentre quella endocrina (insulina, glucagone) è svolta dagli isolotti di Langerhans, regolando la glicemia.</p>
+
+            <h3>Il Timo</h3>
+            <p>Il timo, formato da due lobi, è essenziale per la maturazione dei linfociti T. La corteccia contiene timociti, mentre la midollare ha linfociti maturi e cellule che producono ormoni (timostimolina, timopoietina). La sua attività diminuisce dopo la pubertà.</p>
+
+            <h3>La Tiroide</h3>
+            <p>La tiroide (10-50 g), a forma di farfalla, si trova alla base del collo. Produce T3 e T4 (tramite i follicoli tiroidei) per crescita e metabolismo, e calcitonina (cellule C) per il calcio, sotto controllo dell’ipofisi.</p>
+
+            <h3>Le Paratiroidi</h3>
+            <p>Quattro ghiandole (0,5-1 cm) dietro la tiroide secernono paratormone per regolare calcio e fosforo nel sangue, influenzando reni, intestino e ossa.</p>
+
+            <h3>Le Ghiandole Surrenali</h3>
+            <p>Situate sopra i reni (5 cm, 5 g), sono formate da corteccia (aldosterone, cortisolo, ormoni sessuali) e midollare (adrenalina, noradrenalina). Regolano ricambio idrosalino, glicidico e risposte allo stress.</p>
+        </section>
+
+        <section id="quiz">
+            <h2>Quiz: Testa le Tue Conoscenze sul Sistema Endocrino</h2>
+            <p>Seleziona un quiz e rispondi alle 30 domande entro 30 minuti. Le palline si illumineranno man mano che procedi!</p>
+            <div class="quiz-container">
+                <div class="quiz-selector">
+                    <select id="quiz-select" onchange="selectQuiz()">
+                        <option value="0">Seleziona un Quiz</option>
+                        <option value="1">Quiz 1</option>
+                        <option value="2">Quiz 2</option>
+                        <option value="3">Quiz 3</option>
+                        <option value="4">Quiz 4</option>
+                        <option value="5">Quiz 5</option>
+                    </select>
+                </div>
+                <div class="quiz-timer" id="quiz-timer" style="display: none;">Tempo rimanente: 30:00</div>
+                <div class="quiz-balls" id="quiz-balls" style="display: none;"></div>
+                <div class="quiz-question" id="quiz-question"></div>
+                <div class="quiz-options" id="quiz-options"></div>
+                <div class="quiz-feedback" id="quiz-feedback"></div>
+                <div class="quiz-result" id="quiz-result"></div>
+                <button class="retry-button" id="retry-button" style="display: none;">Riprova</button>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>© 2025 Il Sistema Endocrino - Tutti i diritti riservati</p>
+    </footer>
+
+    <script>
+        const allQuestions = [
+            // Quiz 1
+            [
+                { question: "Come si chiamano le sostanze prodotte dalle ghiandole endocrine?", options: ["Ormoni", "Enzimi", "Vitamine", "Anticorpi"], correct: "Ormoni" },
+                { question: "Quale ghiandola è considerata la più importante?", options: ["Ipofisi", "Pancreas", "Tiroide", "Surrenali"], correct: "Ipofisi" },
+                { question: "Dove si trova l’ipofisi?", options: ["Connessa all’ipotalamo", "Nel collo", "Sopra i reni", "Nel duodeno"], correct: "Connessa all’ipotalamo" },
+                { question: "Quale parte dell’ipofisi immagazzina l’ADH?", options: ["Neuroipofisi", "Adenoipofisi", "Parte tuberale", "Parte distale"], correct: "Neuroipofisi" },
+                { question: "Quale ormone regola la glicemia?", options: ["Insulina", "TSH", "ACTH", "Aldosterone"], correct: "Insulina" },
+                { question: "Quale ghiandola produce il succo pancreatico?", options: ["Pancreas", "Ipofisi", "Tiroide", "Timo"], correct: "Pancreas" },
+                { question: "Dove si trova il timo?", options: ["Nel torace", "Nel collo", "Nell’addome", "Sopra i reni"], correct: "Nel torace" },
+                { question: "Quale ghiandola produce T3 e T4?", options: ["Tiroide", "Ipofisi", "Paratiroidi", "Surrenali"], correct: "Tiroide" },
+                { question: "Quale ormone regola il calcio nel sangue?", options: ["Paratormone", "Insulina", "Cortisolo", "Ossitocina"], correct: "Paratormone" },
+                { question: "Dove si trovano le ghiandole surrenali?", options: ["Sopra i reni", "Nel collo", "Nel torace", "Nell’addome"], correct: "Sopra i reni" },
+                { question: "Quale parte dell’ipofisi produce ACTH?", options: ["Adenoipofisi", "Neuroipofisi", "Parte intermedia", "Ipotalamo"], correct: "Adenoipofisi" },
+                { question: "Quale ormone è prodotto dagli isolotti di Langerhans?", options: ["Glucagone", "Timostimolina", "T4", "Aldosterone"], correct: "Glucagone" },
+                { question: "Quale ghiandola matura i linfociti T?", options: ["Timo", "Pancreas", "Tiroide", "Ipofisi"], correct: "Timo" },
+                { question: "Quale ormone è responsabile delle contrazioni uterine?", options: ["Ossitocina", "Insulina", "TSH", "Cortisolo"], correct: "Ossitocina" },
+                { question: "Quale parte del pancreas è a contatto con la milza?", options: ["Coda", "Testa", "Collo", "Corpo"], correct: "Coda" },
+                { question: "Quale ghiandola produce aldosterone?", options: ["Surrenali", "Tiroide", "Ipofisi", "Paratiroidi"], correct: "Surrenali" },
+                { question: "Cosa regola l’omeostasi dell’organismo?", options: ["Ormoni", "Enzimi", "Globuli bianchi", "Vitamine"], correct: "Ormoni" },
+                { question: "Quale ormone è prodotto dalla parte intermedia dell’ipofisi?", options: ["MSH", "GH", "LH", "ACTH"], correct: "MSH" },
+                { question: "Quale ghiandola è a forma di farfalla?", options: ["Tiroide", "Ipofisi", "Pancreas", "Surrenali"], correct: "Tiroide" },
+                { question: "Quale dotto trasporta il succo pancreatico al duodeno?", options: ["Wirsung", "Santorini", "Ipotalamo", "Colloide"], correct: "Wirsung" },
+                { question: "Quale ghiandola regredisce dopo la pubertà?", options: ["Timo", "Tiroide", "Ipofisi", "Pancreas"], correct: "Timo" },
+                { question: "Quale ormone è iperglicemizzante?", options: ["Glucagone", "Insulina", "Somatostatina", "ACTH"], correct: "Glucagone" },
+                { question: "Dove si trovano le paratiroidi?", options: ["Dietro la tiroide", "Nel torace", "Sopra i reni", "Nel duodeno"], correct: "Dietro la tiroide" },
+                { question: "Quale parte delle surrenali produce adrenalina?", options: ["Midollare", "Corticale", "Fascicolata", "Glomerulare"], correct: "Midollare" },
+                { question: "Quale ormone regola il metabolismo?", options: ["T4", "Insulina", "Aldosterone", "Ossitocina"], correct: "T4" },
+                { question: "Quale ghiandola è connessa all’ipotalamo?", options: ["Ipofisi", "Tiroide", "Pancreas", "Surrenali"], correct: "Ipofisi" },
+                { question: "Quale ormone inibisce la diuresi?", options: ["ADH", "TSH", "LH", "Cortisolo"], correct: "ADH" },
+                { question: "Quale parte del pancreas forma il blocco duodenopancreatico?", options: ["Testa", "Coda", "Collo", "Corpo"], correct: "Testa" },
+                { question: "Quale ghiandola produce timosina?", options: ["Timo", "Tiroide", "Ipofisi", "Surrenali"], correct: "Timo" },
+                { question: "Quale ormone è prodotto dalla corteccia surrenale?", options: ["Cortisolo", "Insulina", "TSH", "MSH"], correct: "Cortisolo" }
+            ],
+            // Quiz 2
+            [
+                { question: "Quale sistema usa gli ormoni?", options: ["Endocrino", "Nervoso", "Digerente", "Immunitario"], correct: "Endocrino" },
+                { question: "Quale ghiandola pesa circa mezzo grammo?", options: ["Ipofisi", "Tiroide", "Pancreas", "Surrenali"], correct: "Ipofisi" },
+                { question: "Quale ormone stimola la tiroide?", options: ["TSH", "ACTH", "LH", "GH"], correct: "TSH" },
+                { question: "Quale parte dell’ipofisi deriva dall’ipotalamo?", options: ["Neuroipofisi", "Adenoipofisi", "Parte distale", "Parte intermedia"], correct: "Neuroipofisi" },
+                { question: "Quale ghiandola ha funzioni esocrine ed endocrine?", options: ["Pancreas", "Tiroide", "Timo", "Paratiroidi"], correct: "Pancreas" },
+                { question: "Quale ormone è ipoglicemizzante?", options: ["Insulina", "Glucagone", "T3", "Aldosterone"], correct: "Insulina" },
+                { question: "Dove matura i linfociti T?", options: ["Timo", "Ipofisi", "Tiroide", "Surrenali"], correct: "Timo" },
+                { question: "Quale ghiandola produce calcitonina?", options: ["Tiroide", "Paratiroidi", "Ipofisi", "Pancreas"], correct: "Tiroide" },
+                { question: "Quale ormone regola il fosforo?", options: ["Paratormone", "Cortisolo", "Ossitocina", "Insulina"], correct: "Paratormone" },
+                { question: "Quale parte delle surrenali produce cortisolo?", options: ["Corticale", "Midollare", "Glomerulare", "Reticolata"], correct: "Corticale" },
+                { question: "Quale ormone regola l’accrescimento?", options: ["GH", "TSH", "ACTH", "ADH"], correct: "GH" },
+                { question: "Quale ghiandola è a contatto con il duodeno?", options: ["Pancreas", "Tiroide", "Ipofisi", "Timo"], correct: "Pancreas" },
+                { question: "Quale ormone è prodotto dalla midollare surrenale?", options: ["Adrenalina", "Cortisolo", "T4", "Paratormone"], correct: "Adrenalina" },
+                { question: "Quale ghiandola è collegata all’asse ipotalamo-ipofisario?", options: ["Ipofisi", "Tiroide", "Pancreas", "Surrenali"], correct: "Ipofisi" },
+                { question: "Quale parte del pancreas è più voluminosa?", options: ["Testa", "Coda", "Collo", "Corpo"], correct: "Testa" },
+                { question: "Quale ghiandola produce timopoietina?", options: ["Timo", "Tiroide", "Ipofisi", "Paratiroidi"], correct: "Timo" },
+                { question: "Quale ormone regola il ricambio idrosalino?", options: ["Aldosterone", "Insulina", "TSH", "Ossitocina"], correct: "Aldosterone" },
+                { question: "Quale parte dell’ipofisi produce FSH?", options: ["Adenoipofisi", "Neuroipofisi", "Parte intermedia", "Ipotalamo"], correct: "Adenoipofisi" },
+                { question: "Quale ghiandola si trova alla base del collo?", options: ["Tiroide", "Ipofisi", "Pancreas", "Surrenali"], correct: "Tiroide" },
+                { question: "Quale dotto è accessorio nel pancreas?", options: ["Santorini", "Wirsung", "Colloide", "Ipotalamo"], correct: "Santorini" },
+                { question: "Quale ghiandola diminuisce di attività dopo la pubertà?", options: ["Timo", "Tiroide", "Ipofisi", "Pancreas"], correct: "Timo" },
+                { question: "Quale ormone monitora alfa e beta nel pancreas?", options: ["Somatostatina", "Insulina", "Glucagone", "ACTH"], correct: "Somatostatina" },
+                { question: "Quale ghiandola è dietro la tiroide?", options: ["Paratiroidi", "Ipofisi", "Surrenali", "Timo"], correct: "Paratiroidi" },
+                { question: "Quale ormone è prodotto dalla parte distale dell’ipofisi?", options: ["LH", "MSH", "ADH", "Ossitocina"], correct: "LH" },
+                { question: "Quale ghiandola produce T3?", options: ["Tiroide", "Ipofisi", "Pancreas", "Surrenali"], correct: "Tiroide" },
+                { question: "Quale parte delle surrenali produce noradrenalina?", options: ["Midollare", "Corticale", "Fascicolata", "Glomerulare"], correct: "Midollare" },
+                { question: "Quale ormone regola la crescita?", options: ["GH", "TSH", "ACTH", "ADH"], correct: "GH" },
+                { question: "Quale ghiandola produce enzimi digestivi?", options: ["Pancreas", "Tiroide", "Ipofisi", "Timo"], correct: "Pancreas" },
+                { question: "Quale ormone è secreto dalle cellule C della tiroide?", options: ["Calcitonina", "T4", "Paratormone", "Cortisolo"], correct: "Calcitonina" },
+                { question: "Quale ghiandola regola il metabolismo glicidico?", options: ["Surrenali", "Tiroide", "Ipofisi", "Paratiroidi"], correct: "Surrenali" }
+            ],
+            // Quiz 3
+            [
+                { question: "Quale sistema mantiene l’omeostasi?", options: ["Endocrino", "Nervoso", "Muscolare", "Scheletrico"], correct: "Endocrino" },
+                { question: "Quale ghiandola stimola altre ghiandole endocrine?", options: ["Ipofisi", "Tiroide", "Pancreas", "Surrenali"], correct: "Ipofisi" },
+                { question: "Quale ormone è immagazzinato nella neuroipofisi?", options: ["Ossitocina", "TSH", "ACTH", "GH"], correct: "Ossitocina" },
+                { question: "Quale parte dell’ipofisi produce MSH?", options: ["Parte intermedia", "Neuroipofisi", "Parte distale", "Parte tuberale"], correct: "Parte intermedia" },
+                { question: "Quale ghiandola regola la glicemia?", options: ["Pancreas", "Tiroide", "Ipofisi", "Timo"], correct: "Pancreas" },
+                { question: "Quale ormone è prodotto dalle cellule beta?", options: ["Insulina", "Glucagone", "Somatostatina", "T4"], correct: "Insulina" },
+                { question: "Quale ghiandola è fondamentale per l’immunità?", options: ["Timo", "Tiroide", "Ipofisi", "Surrenali"], correct: "Timo" },
+                { question: "Quale ormone regola il calcio?", options: ["Calcitonina", "Paratormone", "Insulina", "Cortisolo"], correct: "Calcitonina" },
+                { question: "Quale ghiandola è dietro la tiroide?", options: ["Paratiroidi", "Ipofisi", "Surrenali", "Pancreas"], correct: "Paratiroidi" },
+                { question: "Quale parte delle surrenali produce aldosterone?", options: ["Corticale", "Midollare", "Reticolata", "Fascicolata"], correct: "Corticale" },
+                { question: "Quale ormone regola l’apparato genitale?", options: ["FSH", "TSH", "ACTH", "ADH"], correct: "FSH" },
+                { question: "Quale parte del pancreas è più sottile?", options: ["Coda", "Testa", "Collo", "Corpo"], correct: "Coda" },
+                { question: "Quale ghiandola produce timostimolina?", options: ["Timo", "Tiroide", "Ipofisi", "Surrenali"], correct: "Timo" },
+                { question: "Quale ormone è prodotto dalla midollare surrenale?", options: ["Adrenalina", "Cortisolo", "T3", "Paratormone"], correct: "Adrenalina" },
+                { question: "Quale ghiandola è connessa al duodeno?", options: ["Pancreas", "Tiroide", "Ipofisi", "Timo"], correct: "Pancreas" },
+                { question: "Quale ormone regola il metabolismo?", options: ["T4", "Insulina", "Aldosterone", "Ossitocina"], correct: "T4" },
+                { question: "Quale ghiandola produce ACTH?", options: ["Ipofisi", "Tiroide", "Pancreas", "Surrenali"], correct: "Ipofisi" },
+                { question: "Quale dotto principale trasporta il succo pancreatico?", options: ["Wirsung", "Santorini", "Colloide", "Ipotalamo"], correct: "Wirsung" },
+                { question: "Quale ghiandola si riduce in età adulta?", options: ["Timo", "Tiroide", "Ipofisi", "Pancreas"], correct: "Timo" },
+                { question: "Quale ormone è iperglicemizzante?", options: ["Glucagone", "Insulina", "Somatostatina", "ACTH"], correct: "Glucagone" },
+                { question: "Quale ghiandola regola il calcio e il fosforo?", options: ["Paratiroidi", "Tiroide", "Ipofisi", "Surrenali"], correct: "Paratiroidi" },
+                { question: "Quale parte delle surrenali produce ormoni sessuali?", options: ["Reticolata", "Midollare", "Glomerulare", "Fascicolata"], correct: "Reticolata" },
+                { question: "Quale ormone inibisce la diuresi?", options: ["ADH", "TSH", "LH", "Cortisolo"], correct: "ADH" },
+                { question: "Quale ghiandola produce T3?", options: ["Tiroide", "Ipofisi", "Pancreas", "Surrenali"], correct: "Tiroide" },
+                { question: "Quale parte del pancreas è più spessa?", options: ["Corpo", "Testa", "Coda", "Collo"], correct: "Corpo" },
+                { question: "Quale ghiandola produce timopentina?", options: ["Timo", "Tiroide", "Ipofisi", "Paratiroidi"], correct: "Timo" },
+                { question: "Quale ormone regola il ricambio idrosalino?", options: ["Aldosterone", "Insulina", "TSH", "Ossitocina"], correct: "Aldosterone" },
+                { question: "Quale parte dell’ipofisi produce LH?", options: ["Adenoipofisi", "Neuroipofisi", "Parte intermedia", "Ipotalamo"], correct: "Adenoipofisi" },
+                { question: "Quale ghiandola produce enzimi digestivi?", options: ["Pancreas", "Tiroide", "Ipofisi", "Timo"], correct: "Pancreas" },
+                { question: "Quale ormone è prodotto dalla corteccia surrenale?", options: ["Cortisolo", "Insulina", "TSH", "MSH"], correct: "Cortisolo" }
+            ],
+            // Quiz 4
+            [
+                { question: "Quale sistema usa gli increti?", options: ["Endocrino", "Nervoso", "Digerente", "Immunitario"], correct: "Endocrino" },
+                { question: "Quale ghiandola è la più importante del sistema endocrino?", options: ["Ipofisi", "Tiroide", "Pancreas", "Surrenali"], correct: "Ipofisi" },
+                { question: "Quale ormone stimola le surrenali?", options: ["ACTH", "TSH", "LH", "GH"], correct: "ACTH" },
+                { question: "Quale parte dell’ipofisi immagazzina ossitocina?", options: ["Neuroipofisi", "Adenoipofisi", "Parte distale", "Parte tuberale"], correct: "Neuroipofisi" },
+                { question: "Quale ghiandola produce insulina?", options: ["Pancreas", "Tiroide", "Ipofisi", "Timo"], correct: "Pancreas" },
+                { question: "Quale ormone è prodotto dalle cellule alfa?", options: ["Glucagone", "Insulina", "Somatostatina", "T4"], correct: "Glucagone" },
+                { question: "Quale ghiandola è nel torace?", options: ["Timo", "Tiroide", "Ipofisi", "Surrenali"], correct: "Timo" },
+                { question: "Quale ormone regola il metabolismo osseo?", options: ["Calcitonina", "Paratormone", "Insulina", "Cortisolo"], correct: "Calcitonina" },
+                { question: "Quale ghiandola produce paratormone?", options: ["Paratiroidi", "Tiroide", "Ipofisi", "Surrenali"], correct: "Paratiroidi" },
+                { question: "Quale parte delle surrenali produce adrenalina?", options: ["Midollare", "Corticale", "Fascicolata", "Glomerulare"], correct: "Midollare" },
+                { question: "Quale ormone regola il metabolismo?", options: ["T3", "Insulina", "Aldosterone", "Ossitocina"], correct: "T3" },
+                { question: "Quale parte del pancreas è circondata dal duodeno?", options: ["Testa", "Coda", "Collo", "Corpo"], correct: "Testa" },
+                { question: "Quale ghiandola produce timosina?", options: ["Timo", "Tiroide", "Ipofisi", "Paratiroidi"], correct: "Timo" },
+                { question: "Quale ormone regola il ricambio glicidico?", options: ["Cortisolo", "Insulina", "TSH", "Ossitocina"], correct: "Cortisolo" },
+                { question: "Quale ghiandola produce GH?", options: ["Ipofisi", "Tiroide", "Pancreas", "Surrenali"], correct: "Ipofisi" },
+                { question: "Quale dotto è principale nel pancreas?", options: ["Wirsung", "Santorini", "Colloide", "Ipotalamo"], correct: "Wirsung" },
+                { question: "Quale ghiandola regredisce con l’età?", options: ["Timo", "Tiroide", "Ipofisi", "Pancreas"], correct: "Timo" },
+                { question: "Quale ormone è ipoglicemizzante?", options: ["Insulina", "Glucagone", "Somatostatina", "ACTH"], correct: "Insulina" },
+                { question: "Quale ghiandola si trova sopra i reni?", options: ["Surrenali", "Tiroide", "Ipofisi", "Paratiroidi"], correct: "Surrenali" },
+                { question: "Quale parte dell’ipofisi produce TSH?", options: ["Adenoipofisi", "Neuroipofisi", "Parte intermedia", "Ipotalamo"], correct: "Adenoipofisi" },
+                { question: "Quale ghiandola produce T4?", options: ["Tiroide", "Ipofisi", "Pancreas", "Surrenali"], correct: "Tiroide" },
+                { question: "Quale ormone regola il calcio nel sangue?", options: ["Paratormone", "Cortisolo", "Ossitocina", "Insulina"], correct: "Paratormone" },
+                { question: "Quale parte delle surrenali produce aldosterone?", options: ["Glomerulare", "Midollare", "Reticolata", "Fascicolata"], correct: "Glomerulare" },
+                { question: "Quale ormone inibisce la diuresi?", options: ["ADH", "TSH", "LH", "Cortisolo"], correct: "ADH" },
+                { question: "Quale ghiandola è a forma di farfalla?", options: ["Tiroide", "Ipofisi", "Pancreas", "Surrenali"], correct: "Tiroide" },
+                { question: "Quale parte del pancreas è più sottile?", options: ["Coda", "Testa", "Collo", "Corpo"], correct: "Coda" },
+                { question: "Quale ghiandola produce timopoietina?", options: ["Timo", "Tiroide", "Ipofisi", "Paratiroidi"], correct: "Timo" },
+                { question: "Quale ormone è prodotto dalla neuroipofisi?", options: ["Ossitocina", "TSH", "ACTH", "GH"], correct: "Ossitocina" },
+                { question: "Quale ghiandola produce enzimi digestivi?", options: ["Pancreas", "Tiroide", "Ipofisi", "Timo"], correct: "Pancreas" },
+                { question: "Quale ormone regola il ricambio idrosalino?", options: ["Aldosterone", "Insulina", "TSH", "Ossitocina"], correct: "Aldosterone" }
+            ],
+            // Quiz 5
+            [
+                { question: "Quale sistema regola l’equilibrio interno?", options: ["Endocrino", "Nervoso", "Muscolare", "Scheletrico"], correct: "Endocrino" },
+                { question: "Quale ghiandola è connessa all’ipotalamo?", options: ["Ipofisi", "Tiroide", "Pancreas", "Surrenali"], correct: "Ipofisi" },
+                { question: "Quale ormone regola la crescita?", options: ["GH", "TSH", "ACTH", "ADH"], correct: "GH" },
+                { question: "Quale parte dell’ipofisi produce ADH?", options: ["Neuroipofisi", "Adenoipofisi", "Parte distale", "Parte intermedia"], correct: "Neuroipofisi" },
+                { question: "Quale ghiandola produce glucagone?", options: ["Pancreas", "Tiroide", "Ipofisi", "Timo"], correct: "Pancreas" },
+                { question: "Quale ormone è prodotto dalle cellule delta?", options: ["Somatostatina", "Insulina", "Glucagone", "T4"], correct: "Somatostatina" },
+                { question: "Quale ghiandola matura i linfociti T?", options: ["Timo", "Tiroide", "Ipofisi", "Surrenali"], correct: "Timo" },
+                { question: "Quale ormone regola il metabolismo?", options: ["T3", "Paratormone", "Insulina", "Cortisolo"], correct: "T3" },
+                { question: "Quale ghiandola produce paratormone?", options: ["Paratiroidi", "Tiroide", "Ipofisi", "Surrenali"], correct: "Paratiroidi" },
+                { question: "Quale parte delle surrenali produce cortisolo?", options: ["Fascicolata", "Midollare", "Glomerulare", "Reticolata"], correct: "Fascicolata" },
+                { question: "Quale ormone regola l’apparato genitale?", options: ["LH", "TSH", "ACTH", "ADH"], correct: "LH" },
+                { question: "Quale parte del pancreas è a contatto con la milza?", options: ["Coda", "Testa", "Collo", "Corpo"], correct: "Coda" },
+                { question: "Quale ghiandola produce timostimolina?", options: ["Timo", "Tiroide", "Ipofisi", "Paratiroidi"], correct: "Timo" },
+                { question: "Quale ormone è prodotto dalla midollare surrenale?", options: ["Noradrenalina", "Cortisolo", "T4", "Paratormone"], correct: "Noradrenalina" },
+                { question: "Quale ghiandola produce T4?", options: ["Tiroide", "Ipofisi", "Pancreas", "Surrenali"], correct: "Tiroide" },
+                { question: "Quale dotto accessorio è nel pancreas?", options: ["Santorini", "Wirsung", "Colloide", "Ipotalamo"], correct: "Santorini" },
+                { question: "Quale ghiandola si riduce dopo la pubertà?", options: ["Timo", "Tiroide", "Ipofisi", "Pancreas"], correct: "Timo" },
+                { question: "Quale ormone è ipoglicemizzante?", options: ["Insulina", "Glucagone", "Somatostatina", "ACTH"], correct: "Insulina" },
+                { question: "Quale ghiandola si trova sopra i reni?", options: ["Surrenali", "Tiroide", "Ipofisi", "Paratiroidi"], correct: "Surrenali" },
+                { question: "Quale parte dell’ipofisi produce TSH?", options: ["Adenoipofisi", "Neuroipofisi", "Parte intermedia", "Ipotalamo"], correct: "Adenoipofisi" },
+                { question: "Quale ormone regola il calcio?", options: ["Paratormone", "Cortisolo", "Ossitocina", "Insulina"], correct: "Paratormone" },
+                { question: "Quale parte delle surrenali produce aldosterone?", options: ["Glomerulare", "Midollare", "Reticolata", "Fascicolata"], correct: "Glomerulare" },
+                { question: "Quale ormone inibisce la diuresi?", options: ["ADH", "TSH", "LH", "Cortisolo"], correct: "ADH" },
+                { question: "Quale ghiandola è a forma di farfalla?", options: ["Tiroide", "Ipofisi", "Pancreas", "Surrenali"], correct: "Tiroide" },
+                { question: "Quale parte del pancreas forma il blocco duodenopancreatico?", options: ["Testa", "Coda", "Collo", "Corpo"], correct: "Testa" },
+                { question: "Quale ghiandola produce timopentina?", options: ["Timo", "Tiroide", "Ipofisi", "Paratiroidi"], correct: "Timo" },
+                { question: "Quale ormone regola il ricambio idrosalino?", options: ["Aldosterone", "Insulina", "TSH", "Ossitocina"], correct: "Aldosterone" },
+                { question: "Quale parte dell’ipofisi produce ACTH?", options: ["Adenoipofisi", "Neuroipofisi", "Parte intermedia", "Ipotalamo"], correct: "Adenoipofisi" },
+                { question: "Quale ghiandola produce enzimi digestivi?", options: ["Pancreas", "Tiroide", "Ipofisi", "Timo"], correct: "Pancreas" },
+                { question: "Quale ormone è prodotto dalla corteccia surrenale?", options: ["Cortisolo", "Insulina", "TSH", "MSH"], correct: "Cortisolo" }
+            ]
+        ];
+
+        let currentQuiz = null;
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timeLeft = 30 * 60; // 30 minuti in secondi
+        let timerInterval;
+
+        // Genera le palline numerate
+        const ballsContainer = document.getElementById('quiz-balls');
+        for (let i = 1; i <= 30; i++) {
+            const ball = document.createElement('div');
+            ball.className = 'quiz-ball';
+            ball.id = `ball-${i}`;
+            ball.innerText = i;
+            ballsContainer.appendChild(ball);
+        }
+
+        // Timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('quiz-timer').innerText = `Tempo rimanente: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    endQuiz();
+                }
+            }, 1000);
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function selectQuiz() {
+            const quizSelect = document.getElementById('quiz-select');
+            const selectedQuiz = parseInt(quizSelect.value);
+            if (selectedQuiz === 0) {
+                document.getElementById('quiz-timer').style.display = 'none';
+                document.getElementById('quiz-balls').style.display = 'none';
+                document.getElementById('quiz-question').innerText = '';
+                document.getElementById('quiz-options').innerHTML = '';
+                document.getElementById('quiz-feedback').style.display = 'none';
+                document.getElementById('quiz-result').innerHTML = '';
+                document.getElementById('retry-button').style.display = 'none';
+                clearInterval(timerInterval);
+                return;
+            }
+
+            currentQuiz = selectedQuiz - 1;
+            resetQuiz();
+        }
+
+        function loadQuizQuestion() {
+            const questionElement = document.getElementById('quiz-question');
+            const optionsElement = document.getElementById('quiz-options');
+            const feedbackElement = document.getElementById('quiz-feedback');
+            const resultElement = document.getElementById('quiz-result');
+            const retryButton = document.getElementById('retry-button');
+
+            if (currentQuestionIndex >= currentQuestions.length) {
+                endQuiz();
+                return;
+            }
+
+            const currentQuestion = currentQuestions[currentQuestionIndex];
+            questionElement.innerText = `Domanda ${currentQuestionIndex + 1}: ${currentQuestion.question}`;
+            optionsElement.innerHTML = '';
+            feedbackElement.style.display = 'none';
+            resultElement.innerHTML = '';
+            retryButton.style.display = 'none';
+
+            const shuffledOptions = shuffleArray([...currentQuestion.options]);
+            shuffledOptions.forEach(option => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'quiz-option';
+                optionElement.innerText = option;
+                optionElement.addEventListener('click', () => checkAnswer(option, currentQuestion.correct));
+                optionsElement.appendChild(optionElement);
+            });
+        }
+
+        function checkAnswer(selected, correct) {
+            const feedbackElement = document.getElementById('quiz-feedback');
+            feedbackElement.style.display = 'block';
+            const currentBall = document.getElementById(`ball-${currentQuestionIndex + 1}`);
+            if (selected === correct) {
+                currentBall.classList.add('correct');
+                feedbackElement.innerText = 'Corretto! Ottimo lavoro!';
+                feedbackElement.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                currentBall.classList.add('incorrect');
+                feedbackElement.innerText = `Sbagliato. La risposta corretta è: ${correct}.`;
+                feedbackElement.className = 'quiz-feedback incorrect';
+            }
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuizQuestion();
+            }, 1500);
+        }
+
+        function endQuiz() {
+            clearInterval(timerInterval);
+            const questionElement = document.getElementById('quiz-question');
+            const optionsElement = document.getElementById('quiz-options');
+            const feedbackElement = document.getElementById('quiz-feedback');
+            const resultElement = document.getElementById('quiz-result');
+            const timerElement = document.getElementById('quiz-timer');
+            const retryButton = document.getElementById('retry-button');
+
+            questionElement.innerText = 'Quiz Completato!';
+            optionsElement.innerHTML = '';
+            feedbackElement.style.display = 'none';
+            timerElement.style.display = 'none';
+            retryButton.style.display = 'block';
+
+            if (score >= 21) {
+                resultElement.innerText = `Hai superato il test! Punteggio: ${score}/30`;
+                resultElement.style.color = '#00ff00';
+            } else {
+                resultElement.innerText = `Torna a studiare! Punteggio: ${score}/30`;
+                resultElement.style.color = '#ff0000';
+            }
+        }
+
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            timeLeft = 30 * 60;
+            document.getElementById('quiz-timer').style.display = 'block';
+            document.getElementById('quiz-timer').innerText = 'Tempo rimanente: 30:00';
+            document.getElementById('quiz-balls').style.display = 'flex';
+            document.querySelectorAll('.quiz-ball').forEach(ball => {
+                ball.classList.remove('correct');
+                ball.classList.remove('incorrect');
+            });
+            currentQuestions = shuffleArray([...allQuestions[currentQuiz]]);
+            clearInterval(timerInterval);
+            startTimer();
+            loadQuizQuestion();
+        }
+
+        document.getElementById('retry-button').addEventListener('click', resetQuiz);
+    </script>
+</body>
+</html>
